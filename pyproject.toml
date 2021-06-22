@@ -13,8 +13,8 @@ pandas = "^1.2.4"
 Pyomo = "^6.0.1"
 
 [tool.poetry.dev-dependencies]
-black = "^21.6b0"
-flake9 = "^3.8.3"
+black = "21.6b0"
+flake8 = "3.9.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
