@@ -7,31 +7,31 @@ from velogames.scrapper import scrap, CSV
 
 
 def obj_function(model):
-    return pyo.summation(model.y, model.x)
+    return pyo.summation(model.score, model.chosen)
 
 
 def cost_rule(model):
-    return sum(model.x[i] * model.z[i] for i in model.R) <= 100
+    return sum(model.chosen[i] * model.cost[i] for i in model.riders) <= 100
 
 
 def choice_rule(model):
-    return sum(model.x[i] for i in model.R) == 9
+    return sum(model.chosen[i] for i in model.riders) == 9
 
 
 def all_rounder_rule(model):
-    return sum(model.a[i] * model.x[i] for i in model.R) >= 2
+    return sum(model.leaders[i] * model.chosen[i] for i in model.riders) >= 2
 
 
 def climber_rule(model):
-    return sum(model.c[i] * model.x[i] for i in model.R) >= 2
+    return sum(model.climbers[i] * model.chosen[i] for i in model.riders) >= 2
 
 
 def sprinter_rule(model):
-    return sum(model.s[i] * model.x[i] for i in model.R) >= 1
+    return sum(model.sprinters[i] * model.chosen[i] for i in model.riders) >= 1
 
 
 def unclassed_rule(model):
-    return sum(model.u[i] * model.x[i] for i in model.R) >= 3
+    return sum(model.unclassed[i] * model.chosen[i] for i in model.riders) >= 3
 
 
 def main():
@@ -42,25 +42,27 @@ def main():
         riders[rider_class] = numpy.where(riders["class"] == rider_class, 1, 0)
 
     model = pyo.AbstractModel()
-    model.R = pyo.Set(initialize=range(len(riders)))
-    model.x = pyo.Var(model.R, domain=pyo.Boolean)
-    model.y = pyo.Param(
-        model.R, domain=pyo.NonNegativeIntegers, initialize=riders.score.to_dict()
+    model.riders = pyo.Set(initialize=range(len(riders)))
+    model.chosen = pyo.Var(
+        model.riders, domain=pyo.Boolean
+    )  # 1 for chosen, 0 otherwise
+    model.score = pyo.Param(
+        model.riders, domain=pyo.NonNegativeIntegers, initialize=riders.score.to_dict()
     )
-    model.z = pyo.Param(
-        model.R, domain=pyo.NonNegativeIntegers, initialize=riders.cost.to_dict()
+    model.cost = pyo.Param(
+        model.riders, domain=pyo.NonNegativeIntegers, initialize=riders.cost.to_dict()
     )
-    model.a = pyo.Param(
-        model.R, domain=pyo.Boolean, initialize=riders["All Rounder"].to_dict()
+    model.leaders = pyo.Param(
+        model.riders, domain=pyo.Boolean, initialize=riders["All Rounder"].to_dict()
     )
-    model.c = pyo.Param(
-        model.R, domain=pyo.Boolean, initialize=riders["Climber"].to_dict()
+    model.climbers = pyo.Param(
+        model.riders, domain=pyo.Boolean, initialize=riders["Climber"].to_dict()
     )
-    model.s = pyo.Param(
-        model.R, domain=pyo.Boolean, initialize=riders["Sprinter"].to_dict()
+    model.sprinters = pyo.Param(
+        model.riders, domain=pyo.Boolean, initialize=riders["Sprinter"].to_dict()
     )
-    model.u = pyo.Param(
-        model.R, domain=pyo.Boolean, initialize=riders["Unclassed"].to_dict()
+    model.unclassed = pyo.Param(
+        model.riders, domain=pyo.Boolean, initialize=riders["Unclassed"].to_dict()
     )
 
     model.obj = pyo.Objective(rule=obj_function, sense=pyo.maximize)
@@ -73,5 +75,13 @@ def main():
 
     instance = model.create_instance()
     pyo.SolverFactory("glpk").solve(instance)
-    riders["chosen"] = [bool(instance.x[i].value) for i in range(len(riders))]
-    print(riders[riders["chosen"]][["name", "class", "team", "cost", "score"]])
+    riders["chosen"] = [bool(instance.chosen[i].value) for i in range(len(riders))]
+    team = riders[riders["chosen"]]
+    score = riders[riders["chosen"]].score.sum()
+    cost = riders[riders["chosen"]].cost.sum()
+
+    print("Best possible team:")
+    for _, row in team.iterrows():
+        print(row["name"])
+    print("Score:", score)
+    print("Cost:", cost)
