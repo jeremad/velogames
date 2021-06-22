@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-URL = "https://www.velogames.com/italy/2021/riders.php"
+URL = "https://www.velogames.com/velogame/2021/riders.php"
 CSV = Path("riders.csv")
 
 
@@ -37,7 +37,7 @@ def scrap():
         name = attrs[1].string
         team = attrs[2].string
         rclass = attrs[3].string
-        score = int(attrs[6].string)
+        score = int(attrs[5].string)
         cost = int(attrs[4].string)
         r = Rider(name, team, rclass, score, cost)
         lines.append(r.csv)
