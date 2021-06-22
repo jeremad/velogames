@@ -1,8 +1,8 @@
-from path import Path
+from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
-from rider import Rider
+from velogames.rider import Rider
 
 
 URL = "https://www.velogames.com/italy/2021/riders.php"
@@ -28,7 +28,7 @@ def scrap():
         cost = int(attrs[4].string)
         r = Rider(name, team, rclass, score, cost)
         lines.append(r.csv)
-    CSV.write_lines(lines)
+    CSV.write_text("\n".join(lines))
 
 
 if not CSV.exists():
