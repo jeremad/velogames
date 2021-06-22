@@ -2,11 +2,24 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
-from velogames.rider import Rider
-
 
 URL = "https://www.velogames.com/italy/2021/riders.php"
 CSV = Path("riders.csv")
+
+
+class Rider:
+    def __init__(self, name: str, team: str, rclass: str, score: int, cost: int):
+        self.name = name
+        self.team = team
+        self.rclass = rclass
+        self.score = score
+        self.cost = cost
+
+    @property
+    def csv(self):
+        return ",".join(
+            [self.name, self.team, str(self.rclass), str(self.score), str(self.cost)]
+        )
 
 
 def scrap():
