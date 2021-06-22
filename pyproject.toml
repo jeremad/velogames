@@ -9,6 +9,8 @@ python = "^3.8"
 requests = "^2.25.1"
 beautifulsoup4 = "^4.9.3"
 numpy = "^1.20.3"
+pandas = "^1.2.4"
+Pyomo = "^6.0.1"
 
 [tool.poetry.dev-dependencies]
 black = "^21.6b0"
