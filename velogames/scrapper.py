@@ -3,23 +3,20 @@ import requests
 from bs4 import BeautifulSoup
 
 
-URL = "https://www.velogames.com/velogame/2021/riders.php"
+URL = "https://www.velogames.com/giro-donne/2021/riders.php"
 CSV = Path("riders.csv")
 
 
 class Rider:
-    def __init__(self, name: str, team: str, rclass: str, score: int, cost: int):
+    def __init__(self, name: str, team: str, score: int, cost: int):
         self.name = name
         self.team = team
-        self.rclass = rclass
         self.score = score
         self.cost = cost
 
     @property
     def csv(self):
-        return ",".join(
-            [self.name, self.team, str(self.rclass), str(self.score), str(self.cost)]
-        )
+        return ",".join([self.name, self.team, str(self.score), str(self.cost)])
 
 
 def scrap():
@@ -36,10 +33,9 @@ def scrap():
         attrs = rider.find_all("td")
         name = attrs[1].string
         team = attrs[2].string
-        rclass = attrs[3].string
-        score = int(attrs[6].string)
-        cost = int(attrs[4].string)
-        r = Rider(name, team, rclass, score, cost)
+        score = int(attrs[4].string)
+        cost = int(attrs[3].string)
+        r = Rider(name, team, score, cost)
         lines.append(r.csv)
     CSV.write_text("\n".join(lines))
 

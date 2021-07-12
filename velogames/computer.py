@@ -1,6 +1,5 @@
 import os
 
-import numpy
 import pandas
 import pyomo.environ as pyo
 import twitter
@@ -20,22 +19,6 @@ def choice_rule(model):
     return sum(model.chosen[i] for i in model.riders) == 9
 
 
-def all_rounder_rule(model):
-    return sum(model.leaders[i] * model.chosen[i] for i in model.riders) >= 2
-
-
-def climber_rule(model):
-    return sum(model.climbers[i] * model.chosen[i] for i in model.riders) >= 2
-
-
-def sprinter_rule(model):
-    return sum(model.sprinters[i] * model.chosen[i] for i in model.riders) >= 1
-
-
-def unclassed_rule(model):
-    return sum(model.unclassed[i] * model.chosen[i] for i in model.riders) >= 3
-
-
 class Computer:
     def __init__(self):
         self.twitter_api = twitter.Api(
@@ -44,18 +27,11 @@ class Computer:
             access_token_key=os.environ["ACCESS_TOKEN_KEY"],
             access_token_secret=os.environ["ACCESS_TOKEN_SECRET"],
         )
-        self.riders = pandas.read_csv(
-            CSV, names=["name", "team", "class", "score", "cost"]
-        )
+        self.riders = pandas.read_csv(CSV, names=["name", "team", "score", "cost"])
         self.model = pyo.AbstractModel()
         self.init()
 
     def init(self):
-        for rider_class in self.riders["class"].unique():
-            self.riders[rider_class] = numpy.where(
-                self.riders["class"] == rider_class, 1, 0
-            )
-
         self.model.riders = pyo.Set(initialize=range(len(self.riders)))
         self.model.chosen = pyo.Var(
             self.model.riders, domain=pyo.Boolean
@@ -70,34 +46,10 @@ class Computer:
             domain=pyo.NonNegativeIntegers,
             initialize=self.riders.cost.to_dict(),
         )
-        self.model.leaders = pyo.Param(
-            self.model.riders,
-            domain=pyo.Boolean,
-            initialize=self.riders["All Rounder"].to_dict(),
-        )
-        self.model.climbers = pyo.Param(
-            self.model.riders,
-            domain=pyo.Boolean,
-            initialize=self.riders["Climber"].to_dict(),
-        )
-        self.model.sprinters = pyo.Param(
-            self.model.riders,
-            domain=pyo.Boolean,
-            initialize=self.riders["Sprinter"].to_dict(),
-        )
-        self.model.unclassed = pyo.Param(
-            self.model.riders,
-            domain=pyo.Boolean,
-            initialize=self.riders["Unclassed"].to_dict(),
-        )
 
         self.model.obj = pyo.Objective(rule=obj_function, sense=pyo.maximize)
         self.model.cost_constraint = pyo.Constraint(rule=cost_rule)
         self.model.choice_constraint = pyo.Constraint(rule=choice_rule)
-        self.model.all_rounder_constraint = pyo.Constraint(rule=all_rounder_rule)
-        self.model.climber_constraint = pyo.Constraint(rule=climber_rule)
-        self.model.sprinter_constraint = pyo.Constraint(rule=sprinter_rule)
-        self.model.unclassed_constraint = pyo.Constraint(rule=unclassed_rule)
 
     def compute(self):
         instance = self.model.create_instance()
