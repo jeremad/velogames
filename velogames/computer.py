@@ -38,12 +38,13 @@ def unclassed_rule(model):
 
 class Computer:
     def __init__(self):
-        self.twitter_api = twitter.Api(
-            consumer_key=os.environ["CONSUMER_KEY"],
-            consumer_secret=os.environ["CONSUMER_SECRET"],
-            access_token_key=os.environ["ACCESS_TOKEN_KEY"],
-            access_token_secret=os.environ["ACCESS_TOKEN_SECRET"],
-        )
+        if os.environ.get("CI"):
+            self.twitter_api = twitter.Api(
+                consumer_key=os.environ["CONSUMER_KEY"],
+                consumer_secret=os.environ["CONSUMER_SECRET"],
+                access_token_key=os.environ["ACCESS_TOKEN_KEY"],
+                access_token_secret=os.environ["ACCESS_TOKEN_SECRET"],
+            )
         self.riders = pandas.read_csv(
             CSV, names=["name", "team", "class", "score", "cost"]
         )
@@ -116,4 +117,5 @@ class Computer:
         text += f"Score: {score}\n"
         text += f"Cost: {cost}"
         print(text)
-        self.twitter_api.PostUpdate(text)
+        if os.environ.get("CI"):
+            self.twitter_api.PostUpdate(text)
