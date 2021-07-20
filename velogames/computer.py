@@ -1,3 +1,4 @@
+from enum import Enum
 import os
 from pathlib import Path
 
@@ -43,25 +44,41 @@ def unclassed_rule(model):
     return sum(model.unclassed[i] * model.chosen[i] for i in model.riders) >= 3
 
 
+class GameType(Enum):
+    GRAND_TOUR = 1
+    STAGE_RACE = 2
+    CLASSICS = 3
+    CLASSICS_WITH_UNLIMITED_CHANGES = 4
+
+
 class Computer:
     def __init__(self, csv):
         self.cfg = tomlkit.parse(Path("velogame.toml").read_text())
+        self.game_type = GameType[self.cfg["game"]["type"]]
         if csv is None:
             self.scrap()
             f = CSV
         else:
             f = Path(csv)
-        self.riders = pandas.read_csv(
-            f, names=["name", "team", "class", "score", "cost"]
-        )
+        if self.is_grand_tour:
+            self.riders = pandas.read_csv(
+                f, names=["name", "team", "class", "score", "cost"]
+            )
+        else:
+            self.riders = pandas.read_csv(f, names=["name", "team", "score", "cost"])
         self.model = pyo.AbstractModel()
         self.init()
 
+    @property
+    def is_grand_tour(self):
+        return self.game_type == GameType.GRAND_TOUR
+
     def init(self):
-        for rider_class in self.riders["class"].unique():
-            self.riders[rider_class] = numpy.where(
-                self.riders["class"] == rider_class, 1, 0
-            )
+        if self.is_grand_tour:
+            for rider_class in self.riders["class"].unique():
+                self.riders[rider_class] = numpy.where(
+                    self.riders["class"] == rider_class, 1, 0
+                )
 
         self.model.riders = pyo.Set(initialize=range(len(self.riders)))
         self.model.chosen = pyo.Var(
@@ -77,34 +94,36 @@ class Computer:
             domain=pyo.NonNegativeIntegers,
             initialize=self.riders.cost.to_dict(),
         )
-        self.model.leaders = pyo.Param(
-            self.model.riders,
-            domain=pyo.Boolean,
-            initialize=self.riders["All Rounder"].to_dict(),
-        )
-        self.model.climbers = pyo.Param(
-            self.model.riders,
-            domain=pyo.Boolean,
-            initialize=self.riders["Climber"].to_dict(),
-        )
-        self.model.sprinters = pyo.Param(
-            self.model.riders,
-            domain=pyo.Boolean,
-            initialize=self.riders["Sprinter"].to_dict(),
-        )
-        self.model.unclassed = pyo.Param(
-            self.model.riders,
-            domain=pyo.Boolean,
-            initialize=self.riders["Unclassed"].to_dict(),
-        )
+        if self.is_grand_tour:
+            self.model.leaders = pyo.Param(
+                self.model.riders,
+                domain=pyo.Boolean,
+                initialize=self.riders["All Rounder"].to_dict(),
+            )
+            self.model.climbers = pyo.Param(
+                self.model.riders,
+                domain=pyo.Boolean,
+                initialize=self.riders["Climber"].to_dict(),
+            )
+            self.model.sprinters = pyo.Param(
+                self.model.riders,
+                domain=pyo.Boolean,
+                initialize=self.riders["Sprinter"].to_dict(),
+            )
+            self.model.unclassed = pyo.Param(
+                self.model.riders,
+                domain=pyo.Boolean,
+                initialize=self.riders["Unclassed"].to_dict(),
+            )
 
         self.model.obj = pyo.Objective(rule=obj_function, sense=pyo.maximize)
         self.model.cost_constraint = pyo.Constraint(rule=cost_rule)
         self.model.choice_constraint = pyo.Constraint(rule=choice_rule)
-        self.model.all_rounder_constraint = pyo.Constraint(rule=all_rounder_rule)
-        self.model.climber_constraint = pyo.Constraint(rule=climber_rule)
-        self.model.sprinter_constraint = pyo.Constraint(rule=sprinter_rule)
-        self.model.unclassed_constraint = pyo.Constraint(rule=unclassed_rule)
+        if self.is_grand_tour:
+            self.model.all_rounder_constraint = pyo.Constraint(rule=all_rounder_rule)
+            self.model.climber_constraint = pyo.Constraint(rule=climber_rule)
+            self.model.sprinter_constraint = pyo.Constraint(rule=sprinter_rule)
+            self.model.unclassed_constraint = pyo.Constraint(rule=unclassed_rule)
 
     def scrap(self):
         res = requests.get(self.cfg["game"]["url"]).text
@@ -119,17 +138,21 @@ class Computer:
         cfg = self.cfg["game"]["tab"]
         iname = cfg["name"]
         iteam = cfg["team"]
-        iclass = cfg["class"]
         iscore = cfg["score"]
         icost = cfg["cost"]
+        if self.is_grand_tour:
+            iclass = cfg["class"]
         for rider in tbody.find_all("tr"):
             attrs = rider.find_all("td")
             name = attrs[iname].string
             team = attrs[iteam].string
-            rclass = attrs[iclass].string
             score = int(attrs[iscore].string)
             cost = int(attrs[icost].string)
-            r = Rider(name, team, rclass, score, cost)
+            if self.is_grand_tour:
+                rclass = attrs[iclass].string
+                r = Rider(name, team, score, cost, rclass)
+            else:
+                r = Rider(name, team, score, cost)
             lines.append(r.csv)
         CSV.write_text("\n".join(lines))
 
