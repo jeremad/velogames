@@ -17,3 +17,5 @@ jobs:
         run: python -m poetry run black --check .
       - name: Run flake8
         run: python -m poetry run flake8 .
+      - name: Run mypy
+        run: python -m poetry run mypy .
