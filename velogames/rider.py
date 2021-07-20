@@ -12,7 +12,7 @@ class Rider:
         self.rclass = rclass
 
     @property
-    def csv(self):
+    def csv(self) -> str:
         if self.rclass is not None:
             res = ",".join(
                 [

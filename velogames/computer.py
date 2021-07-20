@@ -1,6 +1,7 @@
 from enum import Enum
 import os
 from pathlib import Path
+from typing import Any, Dict, Optional, TypedDict, cast
 
 from bs4 import BeautifulSoup
 import numpy
@@ -16,31 +17,31 @@ from velogames.rider import Rider
 CSV = Path("riders.csv")
 
 
-def obj_function(model):
+def obj_function(model: Any) -> Any:
     return pyo.summation(model.score, model.chosen)
 
 
-def cost_rule(model):
+def cost_rule(model: Any) -> bool:
     return sum(model.chosen[i] * model.cost[i] for i in model.riders) <= 100
 
 
-def choice_rule(model):
+def choice_rule(model: Any) -> bool:
     return sum(model.chosen[i] for i in model.riders) == 9
 
 
-def all_rounder_rule(model):
+def all_rounder_rule(model: Any) -> bool:
     return sum(model.leaders[i] * model.chosen[i] for i in model.riders) >= 2
 
 
-def climber_rule(model):
+def climber_rule(model: Any) -> bool:
     return sum(model.climbers[i] * model.chosen[i] for i in model.riders) >= 2
 
 
-def sprinter_rule(model):
+def sprinter_rule(model: Any) -> bool:
     return sum(model.sprinters[i] * model.chosen[i] for i in model.riders) >= 1
 
 
-def unclassed_rule(model):
+def unclassed_rule(model: Any) -> bool:
     return sum(model.unclassed[i] * model.chosen[i] for i in model.riders) >= 3
 
 
@@ -51,9 +52,17 @@ class GameType(Enum):
     CLASSICS_WITH_UNLIMITED_CHANGES = 4
 
 
+class GameConfig(TypedDict):
+    name: str
+    url: str
+    type: str
+    tab: Dict[str, int]
+
+
 class Computer:
-    def __init__(self, csv):
-        self.cfg = tomlkit.parse(Path("velogame.toml").read_text())
+    def __init__(self, csv: Optional[str] = None):
+        cfg = tomlkit.parse(Path("velogame.toml").read_text())
+        self.cfg = cast(Dict[str, GameConfig], cfg)
         self.game_type = GameType[self.cfg["game"]["type"]]
         if csv is None:
             self.scrap()
@@ -70,10 +79,10 @@ class Computer:
         self.init()
 
     @property
-    def is_grand_tour(self):
+    def is_grand_tour(self) -> bool:
         return self.game_type == GameType.GRAND_TOUR
 
-    def init(self):
+    def init(self) -> None:
         if self.is_grand_tour:
             for rider_class in self.riders["class"].unique():
                 self.riders[rider_class] = numpy.where(
@@ -125,7 +134,7 @@ class Computer:
             self.model.sprinter_constraint = pyo.Constraint(rule=sprinter_rule)
             self.model.unclassed_constraint = pyo.Constraint(rule=unclassed_rule)
 
-    def scrap(self):
+    def scrap(self) -> None:
         res = requests.get(self.cfg["game"]["url"]).text
         soup = BeautifulSoup(res, features="html.parser")
         tables = soup.find_all("table")
@@ -156,7 +165,7 @@ class Computer:
             lines.append(r.csv)
         CSV.write_text("\n".join(lines))
 
-    def compute(self):
+    def compute(self) -> None:
         instance = self.model.create_instance()
         pyo.SolverFactory("glpk").solve(instance)
         self.riders["chosen"] = [
@@ -164,7 +173,7 @@ class Computer:
         ]
         self.team = self.riders[self.riders["chosen"]]
 
-    def publish(self):
+    def publish(self) -> None:
         score = self.riders[self.riders["chosen"]].score.sum()
         cost = self.riders[self.riders["chosen"]].cost.sum()
         game = self.cfg["game"]["name"]
