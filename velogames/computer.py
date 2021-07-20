@@ -6,13 +6,13 @@ import numpy
 import pandas
 import pyomo.environ as pyo
 import requests
+import tomlkit
 import twitter
 
 from velogames.rider import Rider
 
 
 CSV = Path("riders.csv")
-URL = "https://www.velogames.com/velogame/2021/riders.php"
 
 
 def obj_function(model):
@@ -45,6 +45,7 @@ def unclassed_rule(model):
 
 class Computer:
     def __init__(self, csv):
+        self.cfg = tomlkit.parse(Path("velogame.toml").read_text())
         if csv is None:
             self.scrap()
             f = CSV
@@ -106,7 +107,7 @@ class Computer:
         self.model.unclassed_constraint = pyo.Constraint(rule=unclassed_rule)
 
     def scrap(self):
-        res = requests.get(URL).text
+        res = requests.get(self.cfg["game"]["url"]).text
         soup = BeautifulSoup(res, features="html.parser")
         tables = soup.find_all("table")
         assert len(tables) == 1
@@ -115,13 +116,19 @@ class Computer:
         assert len(tbodys) == 1
         tbody = tbodys[0]
         lines = []
+        cfg = self.cfg["game"]["tab"]
+        iname = cfg["name"]
+        iteam = cfg["team"]
+        iclass = cfg["class"]
+        iscore = cfg["score"]
+        icost = cfg["cost"]
         for rider in tbody.find_all("tr"):
             attrs = rider.find_all("td")
-            name = attrs[1].string
-            team = attrs[2].string
-            rclass = attrs[3].string
-            score = int(attrs[6].string)
-            cost = int(attrs[4].string)
+            name = attrs[iname].string
+            team = attrs[iteam].string
+            rclass = attrs[iclass].string
+            score = int(attrs[iscore].string)
+            cost = int(attrs[icost].string)
             r = Rider(name, team, rclass, score, cost)
             lines.append(r.csv)
         CSV.write_text("\n".join(lines))
@@ -137,7 +144,8 @@ class Computer:
     def publish(self):
         score = self.riders[self.riders["chosen"]].score.sum()
         cost = self.riders[self.riders["chosen"]].cost.sum()
-        text = "Best possible team:\n"
+        game = self.cfg["game"]["name"]
+        text = f"Best possible team for {game}:\n\n"
         for _, row in self.team.iterrows():
             text += f"{row['name']}\n"
         text += f"Score: {score}\n"

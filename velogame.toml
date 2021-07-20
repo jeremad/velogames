@@ -1,0 +1,11 @@
+[game]
+name = "Velogame XXIII"
+url = "https://www.velogames.com/velogame/2021/riders.php"
+type = "Grand Tour"
+
+[game.tab]
+name = 1
+team = 2
+class = 3
+score = 6
+cost = 4
