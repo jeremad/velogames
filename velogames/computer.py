@@ -50,13 +50,6 @@ class Computer:
             f = CSV
         else:
             f = Path(csv)
-        if os.environ.get("CI"):
-            self.twitter_api = twitter.Api(
-                consumer_key=os.environ["CONSUMER_KEY"],
-                consumer_secret=os.environ["CONSUMER_SECRET"],
-                access_token_key=os.environ["ACCESS_TOKEN_KEY"],
-                access_token_secret=os.environ["ACCESS_TOKEN_SECRET"],
-            )
         self.riders = pandas.read_csv(
             f, names=["name", "team", "class", "score", "cost"]
         )
@@ -151,4 +144,10 @@ class Computer:
         text += f"Cost: {cost}"
         print(text)
         if os.environ.get("CI"):
-            self.twitter_api.PostUpdate(text)
+            twitter_api = twitter.Api(
+                consumer_key=os.environ["CONSUMER_KEY"],
+                consumer_secret=os.environ["CONSUMER_SECRET"],
+                access_token_key=os.environ["ACCESS_TOKEN_KEY"],
+                access_token_secret=os.environ["ACCESS_TOKEN_SECRET"],
+            )
+            twitter_api.PostUpdate(text)
