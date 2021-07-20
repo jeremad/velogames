@@ -173,7 +173,7 @@ class Computer:
         ]
         self.team = self.riders[self.riders["chosen"]]
 
-    def publish(self) -> None:
+    def publish(self, *, to_twitter: bool = True) -> None:
         score = self.riders[self.riders["chosen"]].score.sum()
         cost = self.riders[self.riders["chosen"]].cost.sum()
         game = self.cfg["game"]["name"]
@@ -183,7 +183,7 @@ class Computer:
         text += f"Score: {score}\n"
         text += f"Cost: {cost}"
         print(text)
-        if os.environ.get("CI"):
+        if os.environ.get("CI") and to_twitter:
             twitter_api = twitter.Api(
                 consumer_key=os.environ["CONSUMER_KEY"],
                 consumer_secret=os.environ["CONSUMER_SECRET"],

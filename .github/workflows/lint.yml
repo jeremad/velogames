@@ -18,4 +18,20 @@ jobs:
       - name: Run flake8
         run: python -m poetry run flake8 .
       - name: Run mypy
-        run: python -m poetry run mypy .
+        run: python -m poetry run mypy
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install glpk
+        run: sudo apt install glpk-utils
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - name: Install and configure poetry
+        run: python -m pip install poetry
+      - uses: actions/checkout@v1
+      - name: Install python packages
+        run: python -m poetry install
+      - name: Run tests
+        run: python -m poetry run pytest
