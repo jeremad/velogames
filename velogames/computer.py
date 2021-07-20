@@ -1,11 +1,18 @@
 import os
+from pathlib import Path
 
+from bs4 import BeautifulSoup
 import numpy
 import pandas
 import pyomo.environ as pyo
+import requests
 import twitter
 
-from velogames.scrapper import CSV
+from velogames.rider import Rider
+
+
+CSV = Path("riders.csv")
+URL = "https://www.velogames.com/velogame/2021/riders.php"
 
 
 def obj_function(model):
@@ -37,7 +44,12 @@ def unclassed_rule(model):
 
 
 class Computer:
-    def __init__(self):
+    def __init__(self, csv):
+        if csv is None:
+            self.scrap()
+            f = CSV
+        else:
+            f = Path(csv)
         if os.environ.get("CI"):
             self.twitter_api = twitter.Api(
                 consumer_key=os.environ["CONSUMER_KEY"],
@@ -46,7 +58,7 @@ class Computer:
                 access_token_secret=os.environ["ACCESS_TOKEN_SECRET"],
             )
         self.riders = pandas.read_csv(
-            CSV, names=["name", "team", "class", "score", "cost"]
+            f, names=["name", "team", "class", "score", "cost"]
         )
         self.model = pyo.AbstractModel()
         self.init()
@@ -99,6 +111,27 @@ class Computer:
         self.model.climber_constraint = pyo.Constraint(rule=climber_rule)
         self.model.sprinter_constraint = pyo.Constraint(rule=sprinter_rule)
         self.model.unclassed_constraint = pyo.Constraint(rule=unclassed_rule)
+
+    def scrap(self):
+        res = requests.get(URL).text
+        soup = BeautifulSoup(res, features="html.parser")
+        tables = soup.find_all("table")
+        assert len(tables) == 1
+        table = tables[0]
+        tbodys = table.find_all("tbody")
+        assert len(tbodys) == 1
+        tbody = tbodys[0]
+        lines = []
+        for rider in tbody.find_all("tr"):
+            attrs = rider.find_all("td")
+            name = attrs[1].string
+            team = attrs[2].string
+            rclass = attrs[3].string
+            score = int(attrs[6].string)
+            cost = int(attrs[4].string)
+            r = Rider(name, team, rclass, score, cost)
+            lines.append(r.csv)
+        CSV.write_text("\n".join(lines))
 
     def compute(self):
         instance = self.model.create_instance()
