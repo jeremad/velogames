@@ -1,11 +1,11 @@
 [game]
-name = "Velogame XXIII"
-url = "https://www.velogames.com/velogame/2021/riders.php"
+name = "La Vuelta ciclista a España"
+url = "https://www.velogames.com/spain/2021/riders.php"
 type = "GRAND_TOUR"
 
 [game.tab]
 name = 1
 team = 2
-score = 6
-cost = 4
 class = 3
+cost = 4
+score = 5
