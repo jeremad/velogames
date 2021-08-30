@@ -1,0 +1,10 @@
+[game]
+name = "Benelux Tour"
+url = "https://www.velogames.com/benelux/2021/riders.php"
+type = "STAGE_RACE"
+
+[game.tab]
+name = 1
+team = 2
+cost = 3
+score = 4
