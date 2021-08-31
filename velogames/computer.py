@@ -60,7 +60,9 @@ class GameConfig(TypedDict):
 
 
 class Computer:
-    def __init__(self, *, csv: Optional[str] = None, config: str = "velogame.toml"):
+    def __init__(self, *, csv: Optional[str] = None, config: Optional[str] = None):
+        if config is None:
+            config = "velogame.toml"
         cfg = tomlkit.parse(Path(config).read_text())
         self.cfg = cast(Dict[str, GameConfig], cfg)
         self.game_type = GameType[self.cfg["game"]["type"]]
