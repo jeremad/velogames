@@ -1,0 +1,10 @@
+[game]
+name = "Ceratizit Challenge by La Vuelta"
+url = "https://www.velogames.com/challenge/2021/riders.php"
+type = "STAGE_RACE"
+
+[game.tab]
+name = 1
+team = 2
+cost = 3
+score = 5
