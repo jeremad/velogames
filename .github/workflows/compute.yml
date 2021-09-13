@@ -15,22 +15,8 @@ jobs:
       - uses: actions/checkout@v1
       - name: Install python packages
         run: python -m poetry install --no-dev
-      - name: Compute the best possible team (Vuelta)
+      - name: Compute the best possible team
         run: python -m poetry run compute
-        env:
-          ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
-          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
-      - name: Compute the best possible team (Benelux)
-        run: python -m poetry run compute --config benelux.toml
-        env:
-          ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
-          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
-      - name: Compute the best possible team (Challenge)
-        run: python -m poetry run compute --config challenge.toml
         env:
           ACCESS_TOKEN_KEY: ${{ secrets.ACCESS_TOKEN_KEY }}
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
