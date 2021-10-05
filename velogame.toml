@@ -1,6 +1,6 @@
 [game]
-name = "Tour of Britain"
-url = "https://www.velogames.com/tour-of-britain/2021/riders.php"
+name = "The Women's Tour"
+url = "https://www.velogames.com/womens-tour/2021/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
