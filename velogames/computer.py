@@ -1,18 +1,17 @@
-from enum import Enum
 import os
+from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, Optional, TypedDict, cast
 
-from bs4 import BeautifulSoup
 import numpy
 import pandas
 import pyomo.environ as pyo
 import requests
 import tomlkit
 import twitter
+from bs4 import BeautifulSoup
 
 from velogames.rider import Rider
-
 
 CSV = Path("riders.csv")
 
