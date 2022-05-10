@@ -19,6 +19,8 @@ jobs:
         run: python -m poetry run flake8 .
       - name: Run mypy
         run: python -m poetry run mypy
+      - name: Run isort
+        run: python -m poetry run isort --check --diff --profile black .
   test:
     runs-on: ubuntu-latest
     steps:
