@@ -164,7 +164,7 @@ class Computer:
             else:
                 r = Rider(name, team, score, cost)
             lines.append(r.csv)
-        CSV.write_text("\n".join(lines))
+        CSV.write_text("\n".join(lines), encoding="utf-8")
 
     def compute(self) -> None:
         instance = self.model.create_instance()
