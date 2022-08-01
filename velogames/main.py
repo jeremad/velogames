@@ -12,3 +12,7 @@ def main() -> None:
     computer = Computer(csv=args.csv, config=args.config)
     computer.compute()
     computer.publish()
+
+
+def scrap() -> None:
+    Computer(csv=None)
