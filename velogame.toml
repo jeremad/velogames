@@ -1,11 +1,10 @@
 [game]
-name = "Tour de France 2022"
-url = "https://www.velogames.com/velogame/2022/riders.php"
-type = "GRAND_TOUR"
+name = "Tour de Pologne 2022"
+url = "https://www.velogames.com/poland/2022/riders.php"
+type = "STAGE_RACE"
 
 [game.tab]
 name = 1
 team = 2
-class = 3
-cost = 4
-score = 6
+cost = 3
+score = 4
