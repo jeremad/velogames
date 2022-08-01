@@ -28,5 +28,5 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-scrap = 'velogames.scrapper:scrap'
+scrap = 'velogames.main:scrap'
 compute = 'velogames.main:main'
