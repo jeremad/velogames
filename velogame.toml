@@ -1,6 +1,6 @@
 [game]
-name = "Tour de Pologne 2022"
-url = "https://www.velogames.com/poland/2022/riders.php"
+name = "Volta a Portugal em Bicicleta 2022"
+url = "https://www.velogames.com/portugal/2022/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
