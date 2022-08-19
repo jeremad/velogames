@@ -1,10 +1,11 @@
 [game]
-name = "Volta a Portugal em Bicicleta 2022"
-url = "https://www.velogames.com/portugal/2022/riders.php"
-type = "STAGE_RACE"
+name = "La Vuelta ciclista a España 2022"
+url = "https://www.velogames.com/spain/2022/riders.php"
+type = "GRAND_TOUR"
 
 [game.tab]
 name = 1
 team = 2
-cost = 3
-score = 4
+class = 3
+cost = 4
+score = 5
