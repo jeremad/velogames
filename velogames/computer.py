@@ -1,7 +1,7 @@
 import os
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, Optional, TypedDict, cast
+from typing import Any, Dict, List, Optional, TypedDict, cast
 
 import numpy
 import pandas
@@ -174,15 +174,75 @@ class Computer:
         ]
         self.team = self.riders[self.riders["chosen"]]
 
+    def get_riders_text(self) -> str:
+        text = ""
+        if self.is_grand_tour:
+            all_rounder_count = 0
+            climber_count = 0
+            sprinter_count = 0
+            unclassed_count = 0
+            all_rounders = [None, None]
+            climbers = [None, None]
+            sprinter = None
+            unclassed = [None, None, None]
+            wild_card = None
+            for _, row in self.team.iterrows():
+                if row["class"] == "All Rounder":
+                    if all_rounder_count < len(all_rounders):
+                        all_rounders[all_rounder_count] = row
+                    else:
+                        wild_card = row
+                    all_rounder_count += 1
+                if row["class"] == "Climber":
+                    if climber_count < len(climbers):
+                        climbers[climber_count] = row
+                    else:
+                        wild_card = row
+                    climber_count += 1
+                if row["class"] == "Sprinter":
+                    if sprinter_count == 0:
+                        sprinter = row
+                    else:
+                        wild_card = row
+                    sprinter_count += 1
+                if row["class"] == "Unclassed":
+                    if unclassed_count < len(unclassed):
+                        unclassed[unclassed_count] = row
+                    else:
+                        wild_card = row
+                    unclassed_count += 1
+
+            def to_str(table: List[Any]) -> str:
+                res = ""
+                for i in range(len(table)):
+                    assert table[i] is not None
+                    res += f"{table[i]['class'][0]} {i + 1}: {table[i]['name']}\n"
+                return res
+
+            text += to_str(all_rounders)
+            text += to_str(climbers)
+            assert sprinter is not None
+            text += f"S {sprinter['name']}\n"
+            text += to_str(unclassed)
+            assert wild_card is not None
+            text += f"WC: {wild_card['name']}\n\n"
+        else:
+            for _, row in self.team.iterrows():
+                text += f"{row['name']}\n"
+        return text
+
     def publish(self, *, to_twitter: bool = True) -> None:
         score = self.riders[self.riders["chosen"]].score.sum()
         cost = self.riders[self.riders["chosen"]].cost.sum()
         game = self.cfg["game"]["name"]
         text = f"Best possible team for {game}:\n\n"
-        for _, row in self.team.iterrows():
-            text += f"{row['name']}\n"
+        text += self.get_riders_text()
         text += f"Score: {score}\n"
         text += f"Cost: {cost}"
+        text_length = len(text)
+        assert (
+            text_length < 280
+        ), f"text is too long for a tweet: {text_length} characters"
         print(text)
         if os.environ.get("CI") and to_twitter:
             twitter_api = twitter.Api(
