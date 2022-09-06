@@ -1,12 +1,23 @@
-from pathlib import Path
-
 from velogames.computer import Computer
 
 
-def test_compute() -> None:
-    for cfg in Path(".").glob("*.toml"):
-        if cfg.name == "pyproject.toml":
-            continue
-        computer = Computer(config=str(cfg))
-        computer.compute()
-        computer.publish(to_twitter=False)
+def test_grand_tour() -> None:
+    computer = Computer(
+        config="./test/data/vuelta.toml", csv="./history/vuelta_2021.csv"
+    )
+    computer.compute()
+    computer.publish(to_twitter=False)
+
+
+def test_stage_race() -> None:
+    computer = Computer(
+        config="./test/data/britain.toml", csv="./history/britain_2021.csv"
+    )
+    computer.compute()
+    computer.publish(to_twitter=False)
+
+
+def test_scrap_and_compute() -> None:
+    computer = Computer(config="./velogame.toml")
+    computer.compute()
+    computer.publish(to_twitter=False)
