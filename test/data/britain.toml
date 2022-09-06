@@ -1,0 +1,10 @@
+[game]
+name = "18th Tour of Britain"
+url = "https://www.velogames.com/tour-of-britain/2022/riders.php"
+type = "STAGE_RACE"
+
+[game.tab]
+name = 1
+team = 2
+cost = 3
+score = 4
