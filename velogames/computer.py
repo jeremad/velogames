@@ -222,7 +222,7 @@ class Computer:
             text += to_str(all_rounders)
             text += to_str(climbers)
             assert sprinter is not None
-            text += f"S {sprinter['name']}\n"
+            text += f"S: {sprinter['name']}\n"
             text += to_str(unclassed)
             assert wild_card is not None
             text += f"WC: {wild_card['name']}\n\n"
