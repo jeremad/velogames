@@ -1,6 +1,6 @@
 [game]
-name = "18th Tour of Britain"
-url = "https://www.velogames.com/tour-of-britain/2022/riders.php"
+name = "8th Ceratizit Challenge by La Vuelta"
+url = "https://www.velogames.com/ceratizit-challenge/2022/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
