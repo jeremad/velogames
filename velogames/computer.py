@@ -21,27 +21,33 @@ def obj_function(model: Any) -> Any:
 
 
 def cost_rule(model: Any) -> bool:
-    return sum(model.chosen[i] * model.cost[i] for i in model.riders) <= 100
+    s: int = sum(model.chosen[i] * model.cost[i] for i in model.riders)
+    return s <= 100
 
 
 def choice_rule(model: Any) -> bool:
-    return sum(model.chosen[i] for i in model.riders) == 9
+    s: int = sum(model.chosen[i] for i in model.riders)
+    return s == 9
 
 
 def all_rounder_rule(model: Any) -> bool:
-    return sum(model.leaders[i] * model.chosen[i] for i in model.riders) >= 2
+    s: int = sum(model.leaders[i] * model.chosen[i] for i in model.riders)
+    return s >= 2
 
 
 def climber_rule(model: Any) -> bool:
-    return sum(model.climbers[i] * model.chosen[i] for i in model.riders) >= 2
+    s: int = sum(model.climbers[i] * model.chosen[i] for i in model.riders)
+    return s >= 2
 
 
 def sprinter_rule(model: Any) -> bool:
-    return sum(model.sprinters[i] * model.chosen[i] for i in model.riders) >= 1
+    s: int = sum(model.sprinters[i] * model.chosen[i] for i in model.riders)
+    return s >= 1
 
 
 def unclassed_rule(model: Any) -> bool:
-    return sum(model.unclassed[i] * model.chosen[i] for i in model.riders) >= 3
+    s: int = sum(model.unclassed[i] * model.chosen[i] for i in model.riders)
+    return s >= 3
 
 
 class GameType(Enum):
