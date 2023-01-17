@@ -1,6 +1,6 @@
 [game]
-name = "Tour de Romandie Féminin"
-url = "https://www.velogames.com/romandie-feminin/2022/riders.php"
+name = "Tour Down Under"
+url = "https://www.velogames.com/tour-down-under/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
