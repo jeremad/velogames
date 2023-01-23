@@ -1,6 +1,6 @@
 [game]
-name = "Tour Down Under"
-url = "https://www.velogames.com/tour-down-under/2023/riders.php"
+name = "Vuelta a San Juan Internacional"
+url = "https://www.velogames.com/san-juan/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
