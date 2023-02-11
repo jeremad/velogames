@@ -1,6 +1,6 @@
 [game]
-name = "Volta a la Comunitat Valenciana"
-url = "https://www.velogames.com/valencia/2023/riders.php"
+name = "Tour of Oman 2023"
+url = "https://www.velogames.com/oman/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
