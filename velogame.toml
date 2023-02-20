@@ -1,6 +1,6 @@
 [game]
-name = "Vuelta a Andalucia Ruta Ciclista Del Sol 2023"
-url = "https://www.velogames.com/andalucia/2023/riders.php"
+name = "UAE Tour 2023"
+url = "https://www.velogames.com/uae/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
