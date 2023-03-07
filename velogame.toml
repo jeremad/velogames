@@ -1,6 +1,6 @@
 [game]
-name = "UAE Tour 2023"
-url = "https://www.velogames.com/uae/2023/riders.php"
+name = "Paris-Nicr 2023"
+url = "https://www.velogames.com/pn/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
