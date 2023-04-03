@@ -1,6 +1,6 @@
 [game]
-name = "Volta Ciclista a Catalunya 2023"
-url = "https://www.velogames.com/catalunya/2023/riders.php"
+name = "Itzulia Basque Country 2023"
+url = "https://www.velogames.com/itzulia/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
