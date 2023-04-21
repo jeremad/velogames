@@ -7,21 +7,21 @@ authors = ["jeremad <jeremy.tellaa@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 requests = "2.28.2"
-beautifulsoup4 = "4.11.1"
-numpy = "1.24.1"
-pandas = "1.5.2"
-Pyomo = "6.4.4"
+beautifulsoup4 = "4.12.2"
+numpy = "1.24.2"
+pandas = "2.0.0"
+Pyomo = "6.5.0"
 python-twitter = "3.5"
-tomlkit = "0.11.6"
+tomlkit = "0.11.7"
 
 [tool.poetry.dev-dependencies]
-black = "22.12.0"
+black = "23.3.0"
 flake8 = "6.0.0"
-mypy = "0.991"
+mypy = "1.2.0"
 types-requests = "^2.28.0.0"
-pytest = "7.2.1"
+pytest = "7.3.1"
 pytest-cov = "4.0.0"
-isort = "5.11.4"
+isort = "5.12.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
