@@ -1,6 +1,6 @@
 [game]
-name = "Itzulia Basque Country 2023"
-url = "https://www.velogames.com/itzulia/2023/riders.php"
+name = "Tour de Romandie 2023"
+url = "https://www.velogames.com/romandie/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
