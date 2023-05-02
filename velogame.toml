@@ -1,6 +1,6 @@
 [game]
-name = "Tour de Romandie 2023"
-url = "https://www.velogames.com/romandie/2023/riders.php"
+name = "La Vuelta Femenina 2023"
+url = "https://www.velogames.com/spain-femenina/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
