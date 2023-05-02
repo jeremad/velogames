@@ -1,10 +1,11 @@
 [game]
-name = "La Vuelta Femenina 2023"
-url = "https://www.velogames.com/spain-femenina/2023/riders.php"
-type = "STAGE_RACE"
+name = "Giro d'Italia 2023"
+url = "https://www.velogames.com/italy/2023/riders.php"
+type = "GRAND_TOUR"
 
 [game.tab]
 name = 1
 team = 2
-cost = 3
+cost = 4
 score = 5
+class = 3
