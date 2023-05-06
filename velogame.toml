@@ -7,5 +7,5 @@ type = "GRAND_TOUR"
 name = 1
 team = 2
 cost = 4
-score = 5
+score = 6
 class = 3
