@@ -1,6 +1,6 @@
 [game]
-name = "Critérium du Dauphiné 2023"
-url = "https://www.velogames.com/cdd/2023/riders.php"
+name = "Tour de Suisse 2023"
+url = "https://www.velogames.com/suisse/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
