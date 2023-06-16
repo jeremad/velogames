@@ -1,6 +1,6 @@
 [game]
 name = "Tour de Suisse 2023"
-url = "https://www.velogames.com/suisse/2023/riders.php"
+url = "https://www.velogames.com/suisse-women/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
