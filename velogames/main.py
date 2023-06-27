@@ -1,6 +1,7 @@
 import argparse
 
 from velogames.computer import Computer
+from velogames.form import post_form
 
 
 def main() -> None:
@@ -16,3 +17,8 @@ def main() -> None:
 
 def scrap() -> None:
     Computer(csv=None)
+
+
+def create_form() -> None:
+    scrap()
+    post_form()
