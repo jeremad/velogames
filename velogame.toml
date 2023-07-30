@@ -1,6 +1,6 @@
 [game]
-name = "Tour de France Femmes 2023"
-url = "https://www.velogames.com/velogame-femmes/2023/riders.php"
+name = "Tour de Pologne 2023"
+url = "https://www.velogames.com/poland/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
