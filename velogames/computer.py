@@ -160,12 +160,12 @@ class Computer:
             iclass = cfg["class"]
         for rider in tbody.find_all("tr"):
             attrs = rider.find_all("td")
-            name = attrs[iname].string
-            team = attrs[iteam].string
-            score = int(attrs[iscore].string)
-            cost = int(attrs[icost].string)
+            name = attrs[iname].string.strip()
+            team = attrs[iteam].string.strip()
+            score = int(attrs[iscore].string.strip())
+            cost = int(attrs[icost].string.strip())
             if self.is_grand_tour:
-                rclass = attrs[iclass].string
+                rclass = attrs[iclass].string.strip()
                 r = Rider(name, team, score, cost, rclass)
             else:
                 r = Rider(name, team, score, cost)
