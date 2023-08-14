@@ -8,8 +8,8 @@ import pandas
 import pyomo.environ as pyo
 import requests
 import tomlkit
-import twitter
 from bs4 import BeautifulSoup
+from requests_oauthlib import OAuth1Session  # type: ignore[import]
 
 from velogames.rider import Rider
 
@@ -251,10 +251,17 @@ class Computer:
         ), f"text is too long for a tweet: {text_length} characters"
         print(text)
         if os.environ.get("CI") and to_twitter:
-            twitter_api = twitter.Api(
-                consumer_key=os.environ["CONSUMER_KEY"],
-                consumer_secret=os.environ["CONSUMER_SECRET"],
-                access_token_key=os.environ["ACCESS_TOKEN_KEY"],
-                access_token_secret=os.environ["ACCESS_TOKEN_SECRET"],
+            twitter_api = OAuth1Session(
+                os.environ["CONSUMER_KEY"],
+                client_secret=os.environ["CONSUMER_SECRET"],
+                resource_owner_key=os.environ["ACCESS_TOKEN_KEY"],
+                resource_owner_secret=os.environ["ACCESS_TOKEN_SECRET"],
             )
-            twitter_api.PostUpdate(text)
+            res = twitter_api.post(
+                "https://api.twitter.com/2/tweets",
+                json={"text": text},
+            )
+            if res.status_code != 201:
+                raise Exception(
+                    f"Request returned an error: {res.status_code} {res.text}"
+                )
