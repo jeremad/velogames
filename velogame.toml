@@ -1,6 +1,6 @@
 [game]
-name = "Volta a Portugal em Bicicleta 2023"
-url = "https://www.velogames.com/portugal/2023/riders.php"
+name = "Renewi Tour 2023"
+url = "https://www.velogames.com/benelux/2023/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
