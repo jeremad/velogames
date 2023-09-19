@@ -9,7 +9,7 @@ import pyomo.environ as pyo
 import requests
 import tomlkit
 from bs4 import BeautifulSoup
-from requests_oauthlib import OAuth1Session  # type: ignore[import]
+from requests_oauthlib import OAuth1Session  # type: ignore[import-untyped]
 
 from velogames.rider import Rider
 
