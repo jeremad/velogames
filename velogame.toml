@@ -1,11 +1,11 @@
 [game]
-name = "La Vuelta ciclista a España 2023"
-url = "https://www.velogames.com/spain/2023/riders.php"
-type = "GRAND_TOUR"
+name = "Tour Down Under 2024"
+url = "https://www.velogames.com/tour-down-under/2024/riders.php"
+type = "STAGE_RACE"
 
 [game.tab]
 name = 1
 team = 2
-cost = 4
-score = 6
-class = 3
+cost = 3
+score = 5
+# class = 3
