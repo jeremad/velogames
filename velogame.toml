@@ -1,6 +1,6 @@
 [game]
-name = "Etoile de Bessèges 2024"
-url = "https://www.velogames.com/besseges/2024/riders.php"
+name = "Tour de la Provence 2024"
+url = "https://www.velogames.com/provence/2024/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
