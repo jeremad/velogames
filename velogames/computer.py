@@ -241,7 +241,7 @@ class Computer:
         score = self.riders[self.riders["chosen"]].score.sum()
         cost = self.riders[self.riders["chosen"]].cost.sum()
         game = self.cfg["game"]["name"]
-        text = f"Best possible team for {game}:\n\n"
+        text = f"Best possible Velogames team for {game}:\n\n"
         text += self.get_riders_text()
         text += f"Score: {score}\n"
         text += f"Cost: {cost}"
