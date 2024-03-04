@@ -1,6 +1,6 @@
 [game]
-name = "Paris-Nice 2024"
-url = "https://www.velogames.com/pn/2024/riders.php"
+name = "Tirreno-Adriatico 2024"
+url = "https://www.velogames.com/tirreno-adriatico/2024/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
