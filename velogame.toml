@@ -1,6 +1,6 @@
 [game]
-name = "Volta Ciclista a Catalunya 2024"
-url = "https://www.velogames.com/catalunya/2024/riders.php"
+name = "Itzulia Basque Country 2024"
+url = "https://www.velogames.com/itzulia/2024/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
