@@ -30,6 +30,11 @@ def choice_rule(model: Any) -> bool:
     return s == 9
 
 
+def classics_choice_rule(model: Any) -> bool:
+    s: int = sum(model.chosen[i] for i in model.riders)
+    return s == 6
+
+
 def all_rounder_rule(model: Any) -> bool:
     s: int = sum(model.leaders[i] * model.chosen[i] for i in model.riders)
     return s >= 2
@@ -60,6 +65,7 @@ class GameType(Enum):
 class GameConfig(TypedDict):
     name: str
     url: str
+    score_url: Optional[str]
     type: str
     tab: Dict[str, int]
 
@@ -134,15 +140,35 @@ class Computer:
 
         self.model.obj = pyo.Objective(rule=obj_function, sense=pyo.maximize)
         self.model.cost_constraint = pyo.Constraint(rule=cost_rule)
-        self.model.choice_constraint = pyo.Constraint(rule=choice_rule)
+        if self.game_type == GameType.CLASSICS_WITH_UNLIMITED_CHANGES:
+            self.model.choice_constraint = pyo.Constraint(rule=classics_choice_rule)
+        else:
+            self.model.choice_constraint = pyo.Constraint(rule=choice_rule)
         if self.is_grand_tour:
             self.model.all_rounder_constraint = pyo.Constraint(rule=all_rounder_rule)
             self.model.climber_constraint = pyo.Constraint(rule=climber_rule)
             self.model.sprinter_constraint = pyo.Constraint(rule=sprinter_rule)
             self.model.unclassed_constraint = pyo.Constraint(rule=unclassed_rule)
 
+    def load_classics_score(self) -> None:
+        # very brittle atm
+        url = self.cfg["game"].get("score_url")
+        assert url is not None
+        res = requests.get(url).text
+        soup = BeautifulSoup(res, features="html.parser")
+        uls = soup.find_all("ul")
+        ul = uls[12]
+        self.scores = {}
+        for line in ul.find_all("li"):
+            name = line.find_all("a")[0].string
+            score_span = line.find_all("span")[1]
+            score = int(score_span.p.b.string.rstrip(" points"))
+            self.scores[name] = score
+
     def scrap(self) -> None:
         res = requests.get(self.cfg["game"]["url"]).text
+        if self.game_type == GameType.CLASSICS_WITH_UNLIMITED_CHANGES:
+            self.load_classics_score()
         soup = BeautifulSoup(res, features="html.parser")
         tables = soup.find_all("table")
         assert len(tables) == 1
@@ -154,7 +180,8 @@ class Computer:
         cfg = self.cfg["game"]["tab"]
         iname = cfg["name"]
         iteam = cfg["team"]
-        iscore = cfg["score"]
+        if self.game_type != GameType.CLASSICS_WITH_UNLIMITED_CHANGES:
+            iscore = cfg["score"]
         icost = cfg["cost"]
         if self.is_grand_tour:
             iclass = cfg["class"]
@@ -162,7 +189,10 @@ class Computer:
             attrs = rider.find_all("td")
             name = attrs[iname].string.strip()
             team = attrs[iteam].string.strip()
-            score = int(attrs[iscore].string.strip())
+            if self.game_type == GameType.CLASSICS_WITH_UNLIMITED_CHANGES:
+                score = self.scores.get(name, 0)
+            else:
+                score = int(attrs[iscore].string.strip())
             cost = int(attrs[icost].string.strip())
             if self.is_grand_tour:
                 rclass = attrs[iclass].string.strip()
