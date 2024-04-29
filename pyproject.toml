@@ -27,6 +27,7 @@ pytest = "8.1.1"
 pytest-cov = "5.0.0"
 isort = "5.13.2"
 types-httplib2 = "^0.22.0.2"
+flake8-pyproject = "^1.2.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -36,3 +37,34 @@ build-backend = "poetry.core.masonry.api"
 scrap = 'velogames.main:scrap'
 compute = 'velogames.main:main'
 form = 'velogames.main:create_form'
+
+[tool.flake8]
+max-line-length=200
+
+[tool.mypy]
+files = 'velogames/*.py, test/*.py'
+allow_untyped_decorators = false
+warn_unused_configs = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+ignore_missing_imports = false
+pretty = true
+
+[[tool.mypy.overrides]]
+module = "pandas.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pyomo.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "bs4.*"
+ignore_missing_imports = true
