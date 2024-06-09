@@ -1,6 +1,6 @@
 [game]
-name = "Critérium du Dauphiné 2024"
-url = "https://www.velogames.com/cdd/2024/riders.php"
+name = "Tour de Suisse 2024"
+url = "https://www.velogames.com/suisse/2024/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
