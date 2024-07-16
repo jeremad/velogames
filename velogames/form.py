@@ -46,7 +46,7 @@ def post_form() -> None:
                             "question": {
                                 "required": True,
                                 "scaleQuestion": {
-                                    "low": 1,
+                                    "low": 0,
                                     "high": 10,
                                 },
                             }
