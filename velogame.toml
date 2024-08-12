@@ -1,6 +1,6 @@
 [game]
-name = "Volta a Portugal 2024"
-url = "https://www.velogames.com/portugal/2024/riders.php"
+name = "Velogames femmes 2024"
+url = "https://www.velogames.com/velogame-femmes/2024/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
