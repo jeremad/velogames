@@ -1,6 +1,6 @@
 [game]
-name = "Velogames femmes 2024"
-url = "https://www.velogames.com/velogame-femmes/2024/riders.php"
+name = "Tour de Pologne 2024"
+url = "https://www.velogames.com/poland/2024/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
