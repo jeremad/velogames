@@ -6,7 +6,7 @@ def test_grand_tour() -> None:
         config="./test/data/vuelta.toml", csv="./history/vuelta/2021.csv"
     )
     computer.compute()
-    computer.publish(to_twitter=False)
+    computer.publish(to_bsky=False)
 
 
 def test_stage_race() -> None:
@@ -14,10 +14,10 @@ def test_stage_race() -> None:
         config="./test/data/britain.toml", csv="./history/britain/2021.csv"
     )
     computer.compute()
-    computer.publish(to_twitter=False)
+    computer.publish(to_bsky=False)
 
 
 def test_scrap_and_compute() -> None:
     computer = Computer(config="./velogame.toml")
     computer.compute()
-    computer.publish(to_twitter=False)
+    computer.publish(to_bsky=False)

@@ -1,4 +1,5 @@
 import os
+from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional, TypedDict, cast
@@ -9,7 +10,6 @@ import pyomo.environ as pyo
 import requests
 import tomlkit
 from bs4 import BeautifulSoup
-from requests_oauthlib import OAuth1Session  # type: ignore[import-untyped]
 
 from velogames.rider import Rider
 
@@ -267,7 +267,7 @@ class Computer:
                 text += f"{row['name']}\n"
         return text
 
-    def publish(self, *, to_twitter: bool = True) -> None:
+    def publish(self, *, to_bsky: bool = True) -> None:
         score = self.riders[self.riders["chosen"]].score.sum()
         cost = self.riders[self.riders["chosen"]].cost.sum()
         game = self.cfg["game"]["name"]
@@ -280,18 +280,34 @@ class Computer:
             text_length < 280
         ), f"text is too long for a tweet: {text_length} characters"
         print(text)
-        if os.environ.get("CI") and to_twitter:
-            twitter_api = OAuth1Session(
-                os.environ["CONSUMER_KEY"],
-                client_secret=os.environ["CONSUMER_SECRET"],
-                resource_owner_key=os.environ["ACCESS_TOKEN_KEY"],
-                resource_owner_secret=os.environ["ACCESS_TOKEN_SECRET"],
+        if os.environ.get("CI") and to_bsky:
+            pwd = os.environ["BSKY_PASSWORD"]
+            handle = os.environ["BSKY_HANDLE"]
+            bsky_session = requests.Session()
+            res = bsky_session.post(
+                "https://bsky.social/xrpc/com.atproto.server.createSession",
+                json={
+                    "identifier": handle,
+                    "password": pwd,
+                },
             )
-            res = twitter_api.post(
-                "https://api.twitter.com/2/tweets",
-                json={"text": text},
+            res.raise_for_status()
+            res_json = res.json()
+            token = res_json["accessJwt"]
+            did = res_json["did"]
+            bsky_session.headers.update({"Authorization": f"Bearer {token}"})
+            res = bsky_session.post(
+                "https://bsky.social/xrpc/com.atproto.repo.createRecord",
+                json={
+                    "repo": did,
+                    "collection": "app.bsky.feed.post",
+                    "record": {
+                        "$type": "app.bsky.feed.post",
+                        "text": text,
+                        "createdAt": datetime.now(timezone.utc)
+                        .isoformat()
+                        .replace("+00:00", "Z"),
+                    },
+                },
             )
-            if res.status_code != 201:
-                raise Exception(
-                    f"Request returned an error: {res.status_code} {res.text}"
-                )
+            res.raise_for_status()
