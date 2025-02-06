@@ -1,6 +1,6 @@
 [game]
-name = "Etoile de Bessèges 2025"
-url = "https://www.velogames.com/besseges/2025/riders.php"
+name = "Volta a la Comunitat Valenciana 2025"
+url = "https://www.velogames.com/valencia/2025/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
