@@ -1,6 +1,6 @@
 [game]
-name = "UAE Tour 2025"
-url = "https://www.velogames.com/uae/2025/riders.php"
+name = "O Gran Camiño 2025"
+url = "https://www.velogames.com/gran-camino/2025/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
