@@ -9,7 +9,7 @@ import pandas
 import pyomo.environ as pyo
 import requests
 import tomlkit
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
 from velogames.rider import Rider
 
@@ -157,12 +157,15 @@ class Computer:
         res = requests.get(url).text
         soup = BeautifulSoup(res, features="html.parser")
         uls = soup.find_all("ul")
-        ul = uls[12]
+        ul = cast(Tag, uls[12])
         self.scores = {}
         for line in ul.find_all("li"):
-            name = line.find_all("a")[0].string
-            score_span = line.find_all("span")[1]
-            score = int(score_span.p.b.string.rstrip(" points"))
+            line = cast(Tag, line)
+            name = cast(Tag, line.find_all("a")[0]).string
+            score_span = cast(Tag, line.find_all("span")[1])
+            score = int(
+                cast(str, cast(Tag, cast(Tag, score_span.p).b).string).rstrip(" points")
+            )
             self.scores[name] = score
 
     def scrap(self) -> None:
@@ -172,10 +175,10 @@ class Computer:
         soup = BeautifulSoup(res, features="html.parser")
         tables = soup.find_all("table")
         assert len(tables) == 1
-        table = tables[0]
+        table = cast(Tag, tables[0])
         tbodys = table.find_all("tbody")
         assert len(tbodys) == 1
-        tbody = tbodys[0]
+        tbody = cast(Tag, tbodys[0])
         lines = []
         cfg = self.cfg["game"]["tab"]
         iname = cfg["name"]
@@ -186,16 +189,18 @@ class Computer:
         if self.is_grand_tour:
             iclass = cfg["class"]
         for rider in tbody.find_all("tr"):
+            rider = cast(Tag, rider)
             attrs = rider.find_all("td")
-            name = attrs[iname].string.strip()
-            team = attrs[iteam].string.strip()
+            name = cast(str, cast(Tag, attrs[iname]).string).strip()
+            team = cast(str, cast(Tag, attrs[iteam]).string).strip()
             if self.game_type == GameType.CLASSICS_WITH_UNLIMITED_CHANGES:
                 score = self.scores.get(name, 0)
             else:
-                score = int(attrs[iscore].string.strip())
-            cost = int(attrs[icost].string.strip())
+
+                score = int(cast(str, cast(Tag, attrs[iscore]).string).strip())
+            cost = int(cast(str, cast(Tag, attrs[icost]).string).strip())
             if self.is_grand_tour:
-                rclass = attrs[iclass].string.strip()
+                rclass = cast(str, cast(Tag, attrs[iclass]).string).strip()
                 r = Rider(name, team, score, cost, rclass)
             else:
                 r = Rider(name, team, score, cost)
