@@ -1,6 +1,6 @@
 [game]
-name = "Itzulia Basque Country 2025"
-url = "https://www.velogames.com/itzulia/2025/riders.php"
+name = "Tour de Romandie 2025"
+url = "https://www.velogames.com/romandie/2025/riders.php"
 type = "STAGE_RACE"
 
 [game.tab]
