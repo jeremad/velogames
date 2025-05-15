@@ -1,11 +1,11 @@
 [game]
-name = "Tour de Romandie 2025"
-url = "https://www.velogames.com/romandie/2025/riders.php"
-type = "STAGE_RACE"
+name = "Giro d'Italia 2025"
+url = "https://www.velogames.com/italy/2025/riders.php"
+type = "GRAND_TOUR"
 
 [game.tab]
 name = 1
 team = 2
-#class = 3
-cost = 3
-score = 5
+class = 3
+cost = 4
+score = 6
